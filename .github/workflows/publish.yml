@@ -2,6 +2,7 @@ on:
   push:
     paths:
       - 'plugins/**'
+  repository_dispatch:
 
 env:
   releaseName: v${{ github.run_number }}
@@ -24,6 +25,7 @@ jobs:
               (
                 if [ ! -d "$platform" ] ; then continue ; fi
                 cd "$platform"
+                if ! ls * &> /dev/null  ; then continue ; fi
                 COPYFILE_DISABLE=true tar -czvf ../../"$build-$platform.tgz" --exclude=".*" *
               )
             done
@@ -37,4 +39,13 @@ jobs:
           tag_name: ${{ env.releaseName }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      - name: Directory update request
+        run: |
+          curl --request POST \
+          --url https://api.github.com/repos//issues \
+          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "title": "Automated issue for plugin update: ${{ github.repository }}",
+            "body": "${{ github.repository }}"
+            }'
