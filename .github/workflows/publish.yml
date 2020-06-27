@@ -42,7 +42,7 @@ jobs:
       - name: Directory update request
         run: |
           curl --request POST \
-          --url https://api.github.com/repos//issues \
+          --url https://api.github.com/repos/solar2d/plugins.solar2d.com/issues \
           --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
           --header 'content-type: application/json' \
           --data '{
