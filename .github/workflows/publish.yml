@@ -41,9 +41,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Directory update request
         run: |
+          [ -z "${{ secrets.ISSUE_PAT }}" ] && echo "Skipping, no ISSUE_PAT" && exit 0
           curl --request POST \
           --url https://api.github.com/repos/solar2d/plugins.solar2d.com/issues \
-          --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+          --header 'authorization: Bearer ${{ secrets.ISSUE_PAT }}' \
           --header 'content-type: application/json' \
           --data '{
             "title": "Automated issue for plugin update: ${{ github.repository }}",
